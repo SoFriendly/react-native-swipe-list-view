@@ -2,7 +2,8 @@
 
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Animated, FlatList, Platform, SectionList } from 'react-native';
+import { Animated, Platform, SectionList } from 'react-native';
+import { FlatList } from 'react-native-gesture-handler'
 
 import SwipeRow from './SwipeRow';
 
@@ -394,6 +395,31 @@ class SwipeListView extends PureComponent {
 
     _renderItem = rowData => this.renderItem(rowData, this._rows);
 
+    renderSectionItem(rowData, rowMap) {
+        const Component = this.props.renderSectionHeader(rowData, rowMap);
+        const HiddenComponent =
+            this.props.renderHiddenItem &&
+            this.props.renderHiddenItem(rowData, rowMap);
+        const { item, index } = rowData;
+        let { key } = item;
+        if (this.props.keyExtractor) {
+            key = this.props.keyExtractor(item, index);
+        }
+
+        const shouldPreviewRow =
+           typeof key !== 'undefined' && this.props.previewRowKey === key;
+
+        return this.renderCell(
+            Component,
+            HiddenComponent,
+            key,
+            item,
+            shouldPreviewRow
+        );
+    }
+
+    _renderSectionHeader = rowData => this.renderSectionItem({ item : rowData.section.title}, this._rows);
+
     _onRef = c => this.setRefs(c);
 
     render() {
@@ -424,6 +450,7 @@ class SwipeListView extends PureComponent {
                     ref={this._onRef}
                     onScroll={this._onScroll}
                     renderItem={this._renderItem}
+                    renderSectionHeader={this._renderSectionHeader}
                 />
             );
         }

@@ -49,6 +49,7 @@ class SwipeRow extends Component {
             previewRepeatInterval: null,
             timeBetweenPreviewRepeats: null,
             dimensionsSet: false,
+            isHiddenRender: false,
             hiddenHeight: this.props.disableHiddenLayoutCalculation
                 ? '100%'
                 : 0,
@@ -68,6 +69,7 @@ class SwipeRow extends Component {
         });
 
         this._translateX.addListener(({ value }) => {
+            this.setState({ isHiddenRender: value !== 0 });
             this.currentTranslateX = value;
             if (this.props.onSwipeValueChange) {
                 let direction = this.previousTrackedDirection;
@@ -670,7 +672,7 @@ class SwipeRow extends Component {
                         },
                     ]}
                 >
-                    {React.cloneElement(this.props.children[0], {
+                    {this.state.isHiddenRender && React.cloneElement(this.props.children[0], {
                         ...this.props.children[0].props,
                         leftActionActivated: this.state.leftActionActivated,
                         rightActionActivated: this.state.rightActionActivated,

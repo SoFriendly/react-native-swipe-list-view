@@ -14,6 +14,7 @@ class SwipeListView extends PureComponent {
     constructor(props) {
         super(props);
         this._rows = {};
+        this._listView = null;
         this.openCellKey = null;
         this.listViewProps = {};
         if (Platform.OS === 'ios') {
@@ -128,17 +129,21 @@ class SwipeListView extends PureComponent {
     // when that happens, which will make sure the list is kept in bounds.
     // See: https://github.com/jemise111/react-native-swipe-list-view/issues/109
     onContentSizeChange(w, h) {
-        const height = h - this.layoutHeight;
-        if (this.yScrollOffset >= height && height > 0) {
-            if (this._listView instanceof FlatList) {
-                this._listView && this._listView.scrollToEnd();
-            } else if (this._listView instanceof SectionList) {
-                this._listView.scrollToEnd && this._listView.scrollToEnd();
-            } else if (this._listView instanceof Animated.FlatList) {
-                this._listView.scrollToEnd && this._listView.scrollToEnd();
+        try {
+            const height = h - this.layoutHeight;
+            if (this.yScrollOffset >= height && height > 0) {
+                if (this._listView instanceof FlatList) {
+                    this._listView && this._listView.scrollToEnd();
+                } else if (this._listView instanceof SectionList) {
+                    this._listView.scrollToEnd && this._listView.scrollToEnd();
+                } else if (this._listView instanceof Animated.FlatList) {
+                    this._listView.scrollToEnd && this._listView.scrollToEnd();
+                }
             }
+            this.props.onContentSizeChange && this.props.onContentSizeChange(w, h);
+        } catch (error) {
+            console.warn('SwipeListView', error);
         }
-        this.props.onContentSizeChange && this.props.onContentSizeChange(w, h);
     }
 
     setRefs(ref) {

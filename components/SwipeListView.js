@@ -2,8 +2,7 @@
 
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Animated, Platform, SectionList } from 'react-native';
-import { FlatList } from 'react-native-gesture-handler'
+import { Animated, Platform, SectionList, FlatList } from 'react-native';
 
 import SwipeRow from './SwipeRow';
 
